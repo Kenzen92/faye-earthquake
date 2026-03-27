@@ -6,7 +6,7 @@ class Settings(BaseSettings):
 
     database_url: str = "postgresql+asyncpg://faye:faye@localhost:5432/faye_earthquake"
     app_name: str = "Faye Earthquake API"
-    debug: bool = False
+    debug: bool = True
     cors_origins: list[str] = ["http://localhost:5173", "http://localhost:3000"]
 
 

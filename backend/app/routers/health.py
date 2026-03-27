@@ -16,3 +16,4 @@ async def health_check():
 async def db_health_check(db: AsyncSession = Depends(get_db)):
     await db.execute(text("SELECT 1"))
     return {"status": "ok", "database": "connected"}
+

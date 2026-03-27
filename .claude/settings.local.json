@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(uv --version)",
+      "Bash(npm --version)",
+      "Bash(docker --version)",
+      "Bash(uv init:*)",
+      "Bash(npm create:*)",
+      "Bash(uv add:*)",
+      "Bash(mkdir -p /c/Users/james/code/faye/faye-earthquake/backend/app/routers)",
+      "Bash(touch /c/Users/james/code/faye/faye-earthquake/backend/app/__init__.py /c/Users/james/code/faye/faye-earthquake/backend/app/routers/__init__.py)",
+      "Bash(npm install:*)",
+      "Bash(uv run:*)",
+      "Bash(npm run:*)",
+      "Bash(docker compose:*)",
+      "Bash(python -m alembic init migrations)",
+      "Bash(python -m alembic revision --autogenerate -m \"create earthquakes table\")",
+      "Bash(alembic upgrade:*)",
+      "Bash(python -m scripts.seed)",
+      "Bash(alembic revision:*)"
+    ]
+  }
+}
