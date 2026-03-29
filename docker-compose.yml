@@ -17,10 +17,10 @@ services:
 
   backend:
     build:
-      context: ./backend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: backend/Dockerfile
     environment:
-      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-faye}:${POSTGRES_PASSWORD:-faye}@db:5432/${POSTGRES_DB:-faye_earthquake}
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-faye}:${POSTGRES_PASSWORD:-faye}@db:5432/${POSTGRES_DB:-faye_earthquake}?ssl=disable
       DEBUG: "false"
     ports:
       - "8080:8000"
