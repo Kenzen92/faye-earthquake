@@ -8,13 +8,13 @@ A full-stack web app with a Python backend, PostgreSQL database, and React front
 
 Install all of these on your computer first. Each name is a link to the download page.
 
-| Tool | What it does | Check if installed |
-|---|---|---|
-| [Python 3.13+](https://www.python.org/downloads/) | Runs the backend | `python --version` |
-| [uv](https://docs.astral.sh/uv/getting-started/installation/) | Manages Python packages | `uv --version` |
-| [Node.js 20+](https://nodejs.org/) | Runs the frontend | `node --version` |
-| [Docker Desktop](https://www.docker.com/products/docker-desktop/) | Runs the database | `docker --version` |
-| [Git](https://git-scm.com/downloads) | Downloads the code | `git --version` |
+| Tool                                                              | What it does            | Check if installed |
+| ----------------------------------------------------------------- | ----------------------- | ------------------ |
+| [Python 3.13+](https://www.python.org/downloads/)                 | Runs the backend        | `python --version` |
+| [uv](https://docs.astral.sh/uv/getting-started/installation/)     | Manages Python packages | `uv --version`     |
+| [Node.js 20+](https://nodejs.org/)                                | Runs the frontend       | `node --version`   |
+| [Docker Desktop](https://www.docker.com/products/docker-desktop/) | Runs the database       | `docker --version` |
+| [Git](https://git-scm.com/downloads)                              | Downloads the code      | `git --version`    |
 
 > To check if something is already installed, open a terminal and type the command in the last column. If you see a version number, you have it. If you see an error, you need to install it.
 
@@ -43,9 +43,9 @@ docker compose up --build
 
 Then open your browser:
 
-- Frontend: http://localhost:3000
-- Backend API: http://localhost:8080
-- API docs: http://localhost:8080/docs
+- Frontend: http://localhost
+- Backend API: http://localhost:8000
+- API docs: http://localhost:8000/docs
 
 To stop everything, press `Ctrl + C` in the terminal, then run:
 
@@ -89,27 +89,41 @@ In terminal 2, go into the backend folder:
 cd faye-earthquake/backend
 ```
 
+Create a local backend env file (first time only):
+
+```bash
+cp .env.example .env
+```
+
 Install the Python packages (first time only):
 
 ```bash
 uv sync
 ```
 
+Initialize or update the database schema:
+
+```bash
+uv run alembic upgrade head
+```
+
 Start the server:
 
 ```bash
-uv run uvicorn app.main:app --reload --port 8080
+uv run uvicorn app.main:app --reload --port 8000
 ```
 
 You should see:
+
 ```
 INFO:     Application startup complete.
-INFO:     Uvicorn running on http://127.0.0.1:8080
+INFO:     Uvicorn running on http://127.0.0.1:8000
 ```
 
-Test it is working by opening http://localhost:8080/health in your browser. You should see:
+Test it is working by opening http://localhost:8000/health in your browser. You should see:
+
 ```json
-{"status": "ok"}
+{ "status": "ok" }
 ```
 
 ---
@@ -135,6 +149,7 @@ npm run dev
 ```
 
 You should see:
+
 ```
 VITE ready in ...ms
 Local: http://localhost:5173/
