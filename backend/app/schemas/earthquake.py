@@ -6,7 +6,6 @@ class EarthquakeBase(BaseModel):
     magnitude: float
     latitude: float
     longitude: float
-    altitude: float
     depth: float
     time: datetime
 

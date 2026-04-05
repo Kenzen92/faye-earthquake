@@ -13,7 +13,6 @@ class Earthquake(Base):
     magnitude: Mapped[float]
     latitude: Mapped[float]
     longitude: Mapped[float]
-    altitude: Mapped[float]
     depth: Mapped[float]
     time: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
