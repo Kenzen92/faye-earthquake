@@ -11,7 +11,6 @@ Earthquake (Base)
   magnitude   → float
   latitude    → float
   longitude   → float
-  altitude    → float
   depth       → float
   time        → datetime (event time)
   created_at  → datetime (auto-set by DB on insert)

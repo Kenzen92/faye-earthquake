@@ -1,7 +1,7 @@
 """create earthquakes table
 
 Revision ID: fcbcc08101d9
-Revises: 
+Revises:
 Create Date: 2026-03-27 16:06:25.878796
 
 """
@@ -26,7 +26,6 @@ def upgrade() -> None:
     sa.Column('magnitude', sa.Float(), nullable=False),
     sa.Column('latitude', sa.Float(), nullable=False),
     sa.Column('longitude', sa.Float(), nullable=False),
-    sa.Column('altitude', sa.Float(), nullable=False),
     sa.Column('depth', sa.Float(), nullable=False),
     sa.Column('time', sa.DateTime(), nullable=False),
     sa.Column('created_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False),
