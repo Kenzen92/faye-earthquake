@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import DateTime, func
+from sqlalchemy import DateTime, String, func
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.database import Base
@@ -10,6 +10,7 @@ class Earthquake(Base):
     __tablename__ = "earthquakes"
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    event_id: Mapped[str | None] = mapped_column(String, unique=True, index=True, nullable=True)
     magnitude: Mapped[float]
     latitude: Mapped[float]
     longitude: Mapped[float]

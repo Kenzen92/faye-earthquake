@@ -17,7 +17,9 @@
       "Bash(python -m alembic revision --autogenerate -m \"create earthquakes table\")",
       "Bash(alembic upgrade:*)",
       "Bash(python -m scripts.seed)",
-      "Bash(alembic revision:*)"
+      "Bash(alembic revision:*)",
+      "Bash(docker ps:*)",
+      "Bash(node -e \"const p = require\\('./frontend/node_modules/react-map-gl/package.json'\\); console.log\\(JSON.stringify\\({main:p.main,module:p.module,exports:Object.keys\\(p.exports||{}\\)},null,2\\)\\)\")"
     ]
   }
 }
