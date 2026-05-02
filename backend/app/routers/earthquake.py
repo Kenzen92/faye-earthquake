@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -21,12 +23,18 @@ async def list_earthquakes_on_map(
     min_magnitude: float | None = None,
     max_magnitude: float | None = None,
     limit: int = 100,
+    start_date: datetime | None = None,
+    end_date: datetime | None = None,
 ):
     query = select(Earthquake).order_by(Earthquake.time.desc())
     if min_magnitude is not None:
         query = query.where(Earthquake.magnitude >= min_magnitude)
     if max_magnitude is not None:
         query = query.where(Earthquake.magnitude <= max_magnitude)
+    if start_date is not None:
+        query = query.where(Earthquake.time >= start_date)
+    if end_date is not None:
+        query = query.where(Earthquake.time <= end_date)
     query = query.limit(limit)
     result = await db.execute(query)
     return result.scalars().all()
