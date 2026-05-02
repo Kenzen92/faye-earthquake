@@ -1,82 +1,58 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Map, { Marker } from "react-map-gl/mapbox";
 import "mapbox-gl/dist/mapbox-gl.css";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { fetchMapEvents, type Earthquake } from "../api/earthquakeApi";
 
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
 
-interface Landmark {
-  id: string;
-  name: string;
-  longitude: number;
-  latitude: number;
-  description: string;
-  builtYear: number;
-  location: string;
-  type: string;
+function pinSize(magnitude: number): number {
+  return Math.max(16, Math.min(52, 12 + magnitude * 4));
 }
 
-const LANDMARKS: Landmark[] = [
-  {
-    id: "london-bridge",
-    name: "London Bridge",
-    longitude: -0.0877,
-    latitude: 51.5079,
-    description:
-      "A historic crossing over the River Thames, connecting the City of London to Southwark. The current bridge was completed in 1973.",
-    builtYear: 1973,
-    location: "London, United Kingdom",
-    type: "Bridge",
-  },
-  {
-    id: "eiffel-tower",
-    name: "Eiffel Tower",
-    longitude: 2.2945,
-    latitude: 48.8584,
-    description:
-      "An iconic wrought-iron lattice tower on the Champ de Mars in Paris. Built as the centerpiece of the 1889 World's Fair, it stands 330 metres tall.",
-    builtYear: 1889,
-    location: "Paris, France",
-    type: "Monument",
-  },
-];
-
 export default function EarthquakeMap() {
-  const [selectedLandmark, setSelectedLandmark] = useState<Landmark | null>(
-    null,
-  );
+  const [earthquakes, setEarthquakes] = useState<Earthquake[]>([]);
+  const [selected, setSelected] = useState<Earthquake | null>(null);
+
+  useEffect(() => {
+    fetchMapEvents({ limit: 100 })
+      .then(setEarthquakes)
+      .catch((err: Error) =>
+        toast.error(`Failed to load earthquake data: ${err.message}`)
+      );
+  }, []);
 
   return (
     <div style={{ display: "flex", width: "100vw", height: "100vh" }}>
+      <ToastContainer position="bottom-right" theme="dark" />
+
       <div style={{ flex: 1 }}>
         <Map
-          initialViewState={{
-            longitude: 1.0,
-            latitude: 50.5,
-            zoom: 5,
-          }}
+          initialViewState={{ longitude: 0, latitude: 20, zoom: 2 }}
           style={{ width: "100%", height: "100%" }}
           mapStyle="mapbox://styles/mapbox/streets-v9"
           mapboxAccessToken={MAPBOX_TOKEN}
         >
-          {LANDMARKS.map((landmark) => (
+          {earthquakes.map((eq) => (
             <Marker
-              key={landmark.id}
-              longitude={landmark.longitude}
-              latitude={landmark.latitude}
+              key={eq.id}
+              longitude={eq.longitude}
+              latitude={eq.latitude}
               anchor="bottom"
               onClick={(e) => {
                 e.originalEvent.stopPropagation();
-                setSelectedLandmark(landmark);
+                setSelected(eq);
               }}
             >
               <div
-                title={landmark.name}
+                title={`M${eq.magnitude.toFixed(1)}`}
                 style={{
                   cursor: "pointer",
-                  fontSize: "28px",
+                  fontSize: `${pinSize(eq.magnitude)}px`,
                   lineHeight: 1,
                   filter:
-                    selectedLandmark?.id === landmark.id
+                    selected?.id === eq.id
                       ? "drop-shadow(0 0 6px #f59e0b)"
                       : "none",
                 }}
@@ -90,7 +66,7 @@ export default function EarthquakeMap() {
 
       <div
         style={{
-          width: selectedLandmark ? "320px" : "0",
+          width: selected ? "320px" : "0",
           overflow: "hidden",
           transition: "width 0.3s ease",
           background: "#1e1e2e",
@@ -100,7 +76,7 @@ export default function EarthquakeMap() {
           flexDirection: "column",
         }}
       >
-        {selectedLandmark && (
+        {selected && (
           <div style={{ padding: "24px", width: "320px" }}>
             <div
               style={{
@@ -111,10 +87,10 @@ export default function EarthquakeMap() {
               }}
             >
               <h2 style={{ margin: 0, fontSize: "20px", color: "#cba6f7" }}>
-                {selectedLandmark.name}
+                M{selected.magnitude.toFixed(1)} Earthquake
               </h2>
               <button
-                onClick={() => setSelectedLandmark(null)}
+                onClick={() => setSelected(null)}
                 style={{
                   background: "none",
                   border: "none",
@@ -131,31 +107,6 @@ export default function EarthquakeMap() {
 
             <div
               style={{
-                display: "inline-block",
-                background: "#313244",
-                color: "#89b4fa",
-                borderRadius: "6px",
-                padding: "3px 10px",
-                fontSize: "12px",
-                marginBottom: "16px",
-              }}
-            >
-              {selectedLandmark.type}
-            </div>
-
-            <p
-              style={{
-                fontSize: "14px",
-                lineHeight: "1.6",
-                color: "#bac2de",
-                marginBottom: "20px",
-              }}
-            >
-              {selectedLandmark.description}
-            </p>
-
-            <div
-              style={{
                 display: "flex",
                 flexDirection: "column",
                 gap: "12px",
@@ -163,14 +114,15 @@ export default function EarthquakeMap() {
                 paddingTop: "16px",
               }}
             >
-              <InfoRow label="Location" value={selectedLandmark.location} />
+              <InfoRow label="Magnitude" value={selected.magnitude.toFixed(2)} />
+              <InfoRow label="Depth" value={`${selected.depth.toFixed(1)} km`} />
               <InfoRow
-                label="Built"
-                value={String(selectedLandmark.builtYear)}
+                label="Time"
+                value={new Date(selected.time).toUTCString()}
               />
               <InfoRow
                 label="Coordinates"
-                value={`${selectedLandmark.latitude.toFixed(4)}°N, ${selectedLandmark.longitude.toFixed(4)}°E`}
+                value={`${selected.latitude.toFixed(4)}°, ${selected.longitude.toFixed(4)}°`}
               />
             </div>
           </div>

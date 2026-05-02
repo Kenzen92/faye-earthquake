@@ -19,7 +19,13 @@
       "Bash(python -m scripts.seed)",
       "Bash(alembic revision:*)",
       "Bash(docker ps:*)",
-      "Bash(node -e \"const p = require\\('./frontend/node_modules/react-map-gl/package.json'\\); console.log\\(JSON.stringify\\({main:p.main,module:p.module,exports:Object.keys\\(p.exports||{}\\)},null,2\\)\\)\")"
+      "Bash(node -e \"const p = require\\('./frontend/node_modules/react-map-gl/package.json'\\); console.log\\(JSON.stringify\\({main:p.main,module:p.module,exports:Object.keys\\(p.exports||{}\\)},null,2\\)\\)\")",
+      "Bash(python -c \"import httpx; r = httpx.get\\('https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2025-05-02&endtime=2025-05-03&minmagnitude=2.5&limit=1'\\); print\\(r.status_code, len\\(r.json\\(\\).get\\('features', []\\)\\)\\)\")",
+      "Bash(Get-ChildItem -Recurse -Path src)",
+      "Bash(Select-Object -Property FullName)",
+      "Bash(ConvertTo-Csv -NoTypeInformation)",
+      "Bash(Select-Object -Skip 1)",
+      "Bash(Sort-Object)"
     ]
   }
 }

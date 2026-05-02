@@ -15,6 +15,23 @@ async def list_earthquakes(db: AsyncSession = Depends(get_db)):
     return result.scalars().all()
 
 
+@router.get("/map-events", response_model=list[EarthquakeRead])
+async def list_earthquakes_on_map(
+    db: AsyncSession = Depends(get_db),
+    min_magnitude: float | None = None,
+    max_magnitude: float | None = None,
+    limit: int = 100,
+):
+    query = select(Earthquake).order_by(Earthquake.time.desc())
+    if min_magnitude is not None:
+        query = query.where(Earthquake.magnitude >= min_magnitude)
+    if max_magnitude is not None:
+        query = query.where(Earthquake.magnitude <= max_magnitude)
+    query = query.limit(limit)
+    result = await db.execute(query)
+    return result.scalars().all()
+
+
 @router.get("/{earthquake_id}", response_model=EarthquakeRead)
 async def get_earthquake(earthquake_id: int, db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(Earthquake).where(Earthquake.id == earthquake_id))

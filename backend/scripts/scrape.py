@@ -4,6 +4,7 @@ Run from the backend/ directory:
     python -m scripts.scrape
 """
 import asyncio
+import sys
 from datetime import date, datetime, timedelta, timezone
 from typing import Any
 
@@ -66,7 +67,7 @@ async def scrape_range(start_date: date, end_date: date) -> int:
 
     Returns the number of new records inserted (conflicts on event_id are silently skipped).
     """
-    async with httpx.AsyncClient(timeout=30) as client:
+    async with httpx.AsyncClient(timeout=30, http2=False) as client:
         response = await client.get(USGS_API_URL, params=_build_params(start_date, end_date))
         response.raise_for_status()
         data = response.json()
@@ -113,7 +114,7 @@ async def scrape_all(years: int = 1, chunk_days: int = 7) -> None:
         except httpx.RequestError as e:
             print(f"Request error: {e} — skipping")
         except Exception as e:
-            print(f"Unexpected error: {e} — skipping")
+            print(f"Unexpected error: {type(e).__name__}: {e} — skipping")
 
         if i < len(chunks):
             await asyncio.sleep(REQUEST_DELAY_SECONDS)
@@ -122,4 +123,6 @@ async def scrape_all(years: int = 1, chunk_days: int = 7) -> None:
 
 
 if __name__ == "__main__":
+    if sys.platform == "win32":
+        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
     asyncio.run(scrape_all())
